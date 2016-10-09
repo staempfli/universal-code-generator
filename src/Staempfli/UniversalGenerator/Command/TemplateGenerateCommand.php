@@ -133,7 +133,7 @@ class TemplateGenerateCommand extends Command
         $propertiesTask = new PropertiesTask($io);
         $propertiesTask->loadDefaultProperties();
 
-        $this->beforeAskInputProperties($templateName, $propertiesTask);
+        $this->beforeAskInputProperties($templateName, $propertiesTask, $io);
         $propertiesTask->displayLoadedProperties();
 
         // Ask input properties
@@ -222,7 +222,7 @@ class TemplateGenerateCommand extends Command
      * @param PropertiesTask $propertiesTask
      * @return void
      */
-    protected function beforeAskInputProperties($templateName, PropertiesTask $propertiesTask)
+    protected function beforeAskInputProperties($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
     {}
 
     /**
