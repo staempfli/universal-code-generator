@@ -1,0 +1,21 @@
+{
+  "name": "staempfli/universal-code-generator",
+  "description": "Staempfli AG - Universal Code Generator Tool",
+  "type": "staempfli-tool",
+  "license": [
+    "GPL-3.0"
+  ],
+  "authors": [
+    {
+      "name": "Juan Alonso",
+      "email": "juan.alonso@staempfli.com"
+    }
+  ],
+  "require": {
+    "symfony/console": "^3.1",
+    "symfony/yaml": "^3.1"
+  },
+  "autoload": {
+    "psr-4": { "Staempfli\\UniversalGenerator": "src/Staempfli/UniversalGenerator" }
+  }
+}

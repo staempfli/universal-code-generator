@@ -1,0 +1,5 @@
+.idea
+.DS_STORE
+/bin/*
+!bin/mage2-generator
+/vendor
