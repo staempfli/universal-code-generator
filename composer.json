@@ -11,13 +11,9 @@
       "email": "juan.alonso@staempfli.com"
     }
   ],
-  "repositories": [
-    {"type": "vcs", "url": "https://github.com/box-project/box2.git"},
-    {"type": "vcs", "url": "https://github.com/padraic/phar-updater.git"}
-  ],
   "require": {
-    "symfony/console": "^3.1",
-    "symfony/yaml": "^3.1",
+    "symfony/console": "~3.0|~2.1",
+    "symfony/yaml": "~3.0|~2.1",
     "kherge/box": "~2.5",
     "padraic/phar-updater": "1.0.*"
   },
