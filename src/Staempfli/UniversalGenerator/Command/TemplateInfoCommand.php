@@ -26,12 +26,22 @@ class TemplateInfoCommand extends Command
     protected $templateArg = 'template';
 
     /**
-     * Configure Command
+     * Default command name is none is set
+     *
+     * @var string
      */
-    protected function configure()
+    protected $defaultName = 'template:info';
+
+    /**
+     * Command configuration
+     */
+    public function configure()
     {
-        $this->setName('template:info')
-            ->setDescription('Show extended info of specific template.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Show extended info of specific template.')
             ->setHelp("This command displays a description of what the template does.")
             ->addArgument($this->templateArg, InputArgument::REQUIRED, 'The template to show description for.');
     }

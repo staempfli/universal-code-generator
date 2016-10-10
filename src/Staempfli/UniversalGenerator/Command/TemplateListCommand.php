@@ -17,12 +17,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class TemplateListCommand extends Command
 {
     /**
-     * Configure Command
+     * Default command name is none is set
+     *
+     * @var string
      */
-    protected function configure()
+    protected $defaultName = 'template:list';
+
+    /**
+     * Command configuration
+     */
+    public function configure()
     {
-        $this->setName('template:list')
-            ->setDescription('Show list of possible templates to generate code.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Show list of possible templates to generate code.')
             ->setHelp("This command checks all available templates to generate code from.");
     }
 

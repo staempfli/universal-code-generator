@@ -17,12 +17,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ConfigUnsetCommand extends Command
 {
     /**
+     * Default command name is none is set
+     *
+     * @var string
+     */
+    protected $defaultName = 'config:unset';
+
+    /**
      * Command configuration
      */
     public function configure()
     {
-        $this->setName('config:unset')
-            ->setDescription('Unset Global Configuration.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Unset Global Configuration.')
             ->setHelp('This commands unsets the global configuration for code generation.');
     }
 

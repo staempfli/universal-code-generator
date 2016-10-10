@@ -45,12 +45,22 @@ class TemplateGenerateCommand extends Command
     protected $rootDir = 'root-dir';
 
     /**
-     * Configure Command
+     * Default command name is none is set
+     *
+     * @var string
      */
-    protected function configure()
+    protected $defaultName = 'template:generate';
+
+    /**
+     * Command configuration
+     */
+    public function configure()
     {
-        $this->setName('template:generate')
-            ->setDescription('Generate code for desired template.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Generate code for desired template.')
             ->setHelp("This command generates code from a specific template")
             ->addArgument($this->templateArg, InputArgument::REQUIRED, 'The template used to generate the code.')
             ->addOption(
