@@ -47,9 +47,10 @@ class ConfigDisplayCommand extends Command
         $propertiesTask = new PropertiesTask($io);
         $propertiesTask->loadDefaultProperties();
         $propertiesTask->displayLoadedProperties();
+        $fileHelper = new FileHelper();
         $io->writeln([
             '<comment>You can change this properties with:</comment>',
-            sprintf('<info>  %s config:set</info>', COMMAND_NAME)
+            sprintf('<info>  %s config:set</info>', $fileHelper->getCommandName())
         ]);
     }
 }
