@@ -88,7 +88,8 @@ class TemplateGenerateCommand extends Command
             if ($template) {
                 $input->setArgument($this->templateArg, $template);
             } else {
-                $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+                $fileHelper = new FileHelper();
+                $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             }
         }
     }
@@ -126,7 +127,8 @@ class TemplateGenerateCommand extends Command
         $templateHelper = new TemplateHelper();
         if (!$templateHelper->templateExists($templateName)) {
             $io->error(sprintf('Template "%s" does not exists', $templateName));
-            $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+            $fileHelper = new FileHelper();
+            $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             return;
         }
 

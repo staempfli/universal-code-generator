@@ -8,6 +8,7 @@
 
 namespace Staempfli\UniversalGenerator;
 
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Symfony\Component\Console\Application as SymfonyConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +25,21 @@ class Application extends SymfonyConsoleApplication
         'template:list' => 'Staempfli\UniversalGenerator\Command\TemplateListCommand',
         'template:info' => 'Staempfli\UniversalGenerator\Command\TemplateInfoCommand',
         'template:generate' => 'Staempfli\UniversalGenerator\Command\TemplateGenerateCommand',
+        'self-update' => 'Staempfli\UniversalGenerator\Command\SelfUpdateCommand',
     ];
+
+    public function __construct($name = '', $version = '')
+    {
+        if (!$name) {
+            $fileHelper = new FileHelper();
+            $name = $fileHelper->getCommandName();
+        }
+        if (!$version) {
+            $version = "@git_version@";
+        }
+
+        parent::__construct($name, $version);
+    }
 
     /**
      * Add generator command

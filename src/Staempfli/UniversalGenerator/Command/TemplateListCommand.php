@@ -8,6 +8,7 @@
 
 namespace Staempfli\UniversalGenerator\Command;
 
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Helper\TemplateHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,9 +57,10 @@ class TemplateListCommand extends Command
         }
 
         $io->newLine();
+        $fileHelper = new FileHelper();
         $io->writeln([
             '<comment>Generate one of these templates using:</comment>',
-            sprintf('<info>  %s template:generate <template></info>', COMMAND_NAME)
+            sprintf('<info>  %s template:generate <template></info>', $fileHelper->getCommandName())
         ]);
     }
 }

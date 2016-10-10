@@ -57,7 +57,8 @@ class TemplateInfoCommand extends Command
             if ($template) {
                 $input->setArgument($this->templateArg, $template);
             } else {
-                $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+                $fileHelper = new FileHelper();
+                $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             }
         }
     }
@@ -70,11 +71,12 @@ class TemplateInfoCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->writeln('<comment>Template Info</comment>');
 
+        $fileHelper = new FileHelper();
         $templateName = $input->getArgument($this->templateArg);
         $templateHelper = new TemplateHelper();
         if (!$templateHelper->templateExists($templateName)) {
             $io->error(sprintf('Template "%s" does not exists', $templateName));
-            $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+            $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             return;
         }
 
@@ -91,7 +93,7 @@ class TemplateInfoCommand extends Command
         $io->newLine();
         $io->writeln([
             '<comment>Generate this template using:</comment>',
-            sprintf('<info>  %s template:generate %s</info>', COMMAND_NAME, $templateName)
+            sprintf('<info>  %s template:generate %s</info>', $fileHelper->getCommandName(), $templateName)
         ]);
     }
 

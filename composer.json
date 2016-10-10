@@ -13,7 +13,9 @@
   ],
   "require": {
     "symfony/console": "^3.1",
-    "symfony/yaml": "^3.1"
+    "symfony/yaml": "^3.1",
+    "kherge/box": "~2.5",
+    "padraic/phar-updater": "1.0.*"
   },
   "autoload": {
     "psr-4": { "Staempfli\\UniversalGenerator\\": "src/Staempfli/UniversalGenerator" }

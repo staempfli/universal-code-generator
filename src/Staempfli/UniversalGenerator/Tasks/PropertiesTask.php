@@ -91,7 +91,9 @@ class PropertiesTask
     public function getDefaultPropertiesFile()
     {
         $fileHelper = new FileHelper();
-        return $fileHelper->getUsersHome() . '/.' . COMMAND_NAME . '/' . $this->defaultPropertiesFilename;
+        // Remove file extension in case that command name contains .phar extension
+        $configFilename = pathinfo($fileHelper->getCommandName(), PATHINFO_FILENAME);
+        return $fileHelper->getUsersHome() . '/.' . $configFilename . '/' . $this->defaultPropertiesFilename;
     }
 
     /**
