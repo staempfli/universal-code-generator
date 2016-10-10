@@ -46,7 +46,7 @@ class FileHelper
      */
     public function getPharPath()
     {
-        return Phar::running(false);
+        return \Phar::running(false);
     }
 
     /**
