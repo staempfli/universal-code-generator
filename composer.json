@@ -13,8 +13,7 @@
   ],
   "require": {
     "symfony/console": "~3.0|~2.1",
-    "symfony/yaml": "~3.0|~2.1",
-    "kherge/box": "~2.5"
+    "symfony/yaml": "~3.0|~2.1"
   },
   "autoload": {
     "psr-4": { "Staempfli\\UniversalGenerator\\": "src/Staempfli/UniversalGenerator" }
