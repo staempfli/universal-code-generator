@@ -25,7 +25,6 @@ class Application extends SymfonyConsoleApplication
         'template:list' => 'Staempfli\UniversalGenerator\Command\TemplateListCommand',
         'template:info' => 'Staempfli\UniversalGenerator\Command\TemplateInfoCommand',
         'template:generate' => 'Staempfli\UniversalGenerator\Command\TemplateGenerateCommand',
-        'self-update' => 'Staempfli\UniversalGenerator\Command\SelfUpdateCommand',
     ];
 
     public function __construct($name = '', $version = '')
