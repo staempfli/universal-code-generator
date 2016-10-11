@@ -141,7 +141,6 @@ class TemplateGenerateCommand extends Command
         $io->writeln(sprintf('<comment>Template Generate: %s</comment>', $templateName));
 
         // Set properties
-        $io->section('Loading Default Properties');
         $propertiesTask = new PropertiesTask($io);
         $propertiesTask->loadDefaultProperties();
 
@@ -180,14 +179,19 @@ class TemplateGenerateCommand extends Command
      */
     protected function runTemplateDependencies($templateName, InputInterface $input, OutputInterface $output)
     {
+        $errors = [];
         $configHelper = new ConfigHelper();
         $dependencies = $configHelper->getTemplateDependencies($templateName);
         foreach ($dependencies as $dependencyTemplate) {
             $io = new SymfonyStyle($input, $output);
             if ($io->confirm(sprintf('This template depends on "%s" template. Would you also like to generate this template?', $dependencyTemplate), true)) {
-                return $this->runCommandForAnotherTemplate($dependencyTemplate, $input, $output);
+                $result = $this->runCommandForAnotherTemplate($dependencyTemplate, $input, $output);
+                if ($result) {
+                    $errors[] = $result;
+                }
             }
         }
+        return $errors;
     }
 
     /**
@@ -266,7 +270,7 @@ class TemplateGenerateCommand extends Command
         $configHelper = new ConfigHelper();
         $afterGenerateInfo = $configHelper->getTemplateAfterGenerateInfo($templateName, $propertiesTask->getProperties());
         if ($afterGenerateInfo) {
-            $io->warning('This template needs you to take care of the following manual steps:');
+            $io->note('This template needs you to take care of the following manual steps:');
             $io->text($afterGenerateInfo);
         }
 

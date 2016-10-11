@@ -9,6 +9,7 @@
 namespace Staempfli\UniversalGenerator\Command;
 
 use Staempfli\UniversalGenerator\Helper\ConfigHelper;
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Helper\TemplateHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
