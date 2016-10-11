@@ -251,8 +251,8 @@ class TemplateGenerateCommand extends Command
     protected function beforeGenerate($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
     {
         $fileHelper = new FileHelper();
-        $io->text(sprintf('Code will be generated at following path %s', $fileHelper->getModuleDir()));
-        if (!$io->confirm('You want to continue?', true)) {
+        $io->text(sprintf('Code will be generated at following path <options=bold>%s</>', $fileHelper->getModuleDir()));
+        if (!$io->confirm('Do you want to continue?', true)) {
             $io->error('Execution stopped');
             return;
         }
