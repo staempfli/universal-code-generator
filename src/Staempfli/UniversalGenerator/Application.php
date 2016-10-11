@@ -27,15 +27,10 @@ class Application extends SymfonyConsoleApplication
         'template:generate' => 'Staempfli\UniversalGenerator\Command\TemplateGenerateCommand',
     ];
 
-    public function __construct($name = '', $version = '')
+    public function __construct($version = 'UNKNOWN')
     {
-        if (!$name) {
-            $fileHelper = new FileHelper();
-            $name = $fileHelper->getCommandName();
-        }
-        if (!$version) {
-            $version = "@git_version@";
-        }
+        $fileHelper = new FileHelper();
+        $name = $fileHelper->getCommandName();
 
         parent::__construct($name, $version);
     }
