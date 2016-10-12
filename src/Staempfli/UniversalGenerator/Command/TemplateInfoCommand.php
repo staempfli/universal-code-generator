@@ -9,6 +9,7 @@
 namespace Staempfli\UniversalGenerator\Command;
 
 use Staempfli\UniversalGenerator\Helper\ConfigHelper;
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Helper\TemplateHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,12 +27,22 @@ class TemplateInfoCommand extends Command
     protected $templateArg = 'template';
 
     /**
-     * Configure Command
+     * Default command name is none is set
+     *
+     * @var string
      */
-    protected function configure()
+    protected $defaultName = 'template:info';
+
+    /**
+     * Command configuration
+     */
+    public function configure()
     {
-        $this->setName('template:info')
-            ->setDescription('Show extended info of specific template.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Show extended info of specific template.')
             ->setHelp("This command displays a description of what the template does.")
             ->addArgument($this->templateArg, InputArgument::REQUIRED, 'The template to show description for.');
     }
@@ -47,7 +58,8 @@ class TemplateInfoCommand extends Command
             if ($template) {
                 $input->setArgument($this->templateArg, $template);
             } else {
-                $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+                $fileHelper = new FileHelper();
+                $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             }
         }
     }
@@ -60,11 +72,12 @@ class TemplateInfoCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->writeln('<comment>Template Info</comment>');
 
+        $fileHelper = new FileHelper();
         $templateName = $input->getArgument($this->templateArg);
         $templateHelper = new TemplateHelper();
         if (!$templateHelper->templateExists($templateName)) {
             $io->error(sprintf('Template "%s" does not exists', $templateName));
-            $io->note(sprintf('You can check the list of available templates with "%s template:list"', COMMAND_NAME));
+            $io->note(sprintf('You can check the list of available templates with "%s template:list"', $fileHelper->getCommandName()));
             return;
         }
 
@@ -81,7 +94,7 @@ class TemplateInfoCommand extends Command
         $io->newLine();
         $io->writeln([
             '<comment>Generate this template using:</comment>',
-            sprintf('<info>  %s template:generate %s</info>', COMMAND_NAME, $templateName)
+            sprintf('<info>  %s template:generate %s</info>', $fileHelper->getCommandName(), $templateName)
         ]);
     }
 

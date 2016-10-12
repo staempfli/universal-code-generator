@@ -12,10 +12,10 @@
     }
   ],
   "require": {
-    "symfony/console": "^3.1",
-    "symfony/yaml": "^3.1"
+    "symfony/console": "~3.0|~2.1",
+    "symfony/yaml": "~3.0|~2.1"
   },
   "autoload": {
-    "psr-4": { "Staempfli\\UniversalGenerator": "src/Staempfli/UniversalGenerator" }
+    "psr-4": { "Staempfli\\UniversalGenerator\\": "src/Staempfli/UniversalGenerator" }
   }
 }

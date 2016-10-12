@@ -17,12 +17,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ConfigSetCommand extends Command
 {
     /**
+     * Default command name is none is set
+     *
+     * @var string
+     */
+    protected $defaultName = 'config:set';
+
+    /**
      * Command configuration
      */
     public function configure()
     {
-        $this->setName('config:set')
-            ->setDescription('Set Global Configuration.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Set Global Configuration.')
             ->setHelp('This commands sets the global configuration for code generation.');
     }
 

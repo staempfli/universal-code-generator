@@ -130,7 +130,7 @@ class GenerateCodeTask
             }
         }
 
-        $this->io->writeln(sprintf('<info>File Created: %s', $this->getRelativePathToCopyTo($filename)));
+        $this->io->writeln(sprintf('<options=bold>File Created:</> %s', $this->getRelativePathToCopyTo($filename)));
     }
 
     /**

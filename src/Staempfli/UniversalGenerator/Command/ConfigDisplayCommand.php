@@ -8,6 +8,7 @@
 
 namespace Staempfli\UniversalGenerator\Command;
 
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Tasks\PropertiesTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,12 +18,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ConfigDisplayCommand extends Command
 {
     /**
+     * Default command name is none is set
+     *
+     * @var string
+     */
+    protected $defaultName = 'config:display';
+
+    /**
      * Command configuration
      */
     public function configure()
     {
-        $this->setName('config:display')
-            ->setDescription('Show Global Configuration.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Show Global Configuration.')
             ->setHelp('This commands displays the global configuration for code generation.');
     }
 
@@ -37,9 +48,10 @@ class ConfigDisplayCommand extends Command
         $propertiesTask = new PropertiesTask($io);
         $propertiesTask->loadDefaultProperties();
         $propertiesTask->displayLoadedProperties();
+        $fileHelper = new FileHelper();
         $io->writeln([
             '<comment>You can change this properties with:</comment>',
-            sprintf('<info>  %s config:set</info>', COMMAND_NAME)
+            sprintf('<info>  %s config:set</info>', $fileHelper->getCommandName())
         ]);
     }
 }

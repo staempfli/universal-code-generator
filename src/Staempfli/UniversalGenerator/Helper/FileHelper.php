@@ -8,12 +8,16 @@
 
 namespace Staempfli\UniversalGenerator\Helper;
 
-
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 class FileHelper
 {
+    /**
+     * @var string
+     */
+    protected $defaultCommandName = "codegen-universal";
+
     /**
      * Get Project Base Dir
      *
@@ -32,6 +36,33 @@ class FileHelper
     public function getModuleDir()
     {
         return getcwd();
+    }
+
+    /**
+     * Get Phar path
+     * - Returns the filename if valid, empty string otherwise.
+     *
+     * @return string
+     */
+    public function getPharPath()
+    {
+        return \Phar::running(false);
+    }
+
+    /**
+     * Get Command name according to file basename
+     *
+     * @return string
+     */
+    public function getCommandName()
+    {
+        if ($this->getPharPath()) {
+            return basename($this->getPharPath());
+        }
+        if (defined('COMMAND_NAME')) {
+            return COMMAND_NAME;
+        }
+        return $this->defaultCommandName;
     }
 
     /**

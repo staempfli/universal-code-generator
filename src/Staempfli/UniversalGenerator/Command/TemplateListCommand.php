@@ -8,6 +8,7 @@
 
 namespace Staempfli\UniversalGenerator\Command;
 
+use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Helper\TemplateHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,12 +18,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class TemplateListCommand extends Command
 {
     /**
-     * Configure Command
+     * Default command name is none is set
+     *
+     * @var string
      */
-    protected function configure()
+    protected $defaultName = 'template:list';
+
+    /**
+     * Command configuration
+     */
+    public function configure()
     {
-        $this->setName('template:list')
-            ->setDescription('Show list of possible templates to generate code.')
+        if (!$this->getName()) {
+            $this->setName($this->defaultName);
+        }
+
+        $this->setDescription('Show list of possible templates to generate code.')
             ->setHelp("This command checks all available templates to generate code from.");
     }
 
@@ -46,9 +57,10 @@ class TemplateListCommand extends Command
         }
 
         $io->newLine();
+        $fileHelper = new FileHelper();
         $io->writeln([
             '<comment>Generate one of these templates using:</comment>',
-            sprintf('<info>  %s template:generate <template></info>', COMMAND_NAME)
+            sprintf('<info>  %s template:generate <template></info>', $fileHelper->getCommandName())
         ]);
     }
 }

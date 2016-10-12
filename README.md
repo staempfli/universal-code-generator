@@ -1,42 +1,68 @@
-# Magento 2 Code Generator Tool
+# Universal Code Generator Tool
 
-## Installation
-
-```
-$ git clone https://github.com/staempfli/magento2-code-generator.git
-$ cd magento2-code-generator && composer install
-
-# Test that it works
-$ bin/COMMAND_NAME
-```
-
-`cp config/default-properties.yml.dist config/default-properties.yml`
-
-### Global installation
-
-* Create symlink to `bin/mage2-generator` on your preferred `$PATH`:
-   
-    * `$ ln -s $(PWD)/bin/mage2-generator /usr/local/bin/mage2-generator`
-
-### Setup personal config
-
-* `$ cp config/personal.properties.dist config/personal.properties
+This tool can be used as base for creating code generators for specific frameworks
 
 ## Usage
 
-* List all templates: `bin/mage2-generator generator:templates:list` 
+0. Create your own generator project:
 
-* Generate template: `bin/mage2-generator generate` 
+    * Check an example here: [magento2-code-generator](https://github.com/staempfli/magento2-code-generator)
 
-**NOTE**:
+0. Add this project as dependency
+
+    ```
+    composer require "staempfli/universal-code-generator":"~1.0"
+    composer update
+    ``` 
+
+0. Copy needed default configuration file
+
+    * `$ cp vendor/staempfli/universal-code-generator/config/default-properties.yml.dist config/default-properties.yml`
     
-* This commands mut be executed on the root module folder where the `registration.php file is. 
+0. You need to create a PHP script to define the console application: 
 
-* For generate `module` where this file is not existing, you must create first the module parent folder and execute the command from there.
+    * We recommend to do that into the `bin` folder
+       
+        `cd bin && vim <command_name>`
+
+    * Add the following content to this file:
+    ```
+    #!/usr/bin/env php
+    <?php
+    // application.php
     
-## Contribute
+    require __DIR__ .'/../vendor/autoload.php';
+    
+    /**
+    * Shortcut constant for the project root directory
+    */
+    define('BP', dirname(__DIR__));
+    /**
+    * Command name
+    */
+    define('COMMAND_NAME', basename(__FILE__));
+    
+    // Init Console Application
+    use Staempfli\UniversalGenerator\Application;
+    
+    $application = new Application('@git-version@');
+    
+    /**
+    * You can add new commands or extend exiting ones to add custom functionality
+    * - Check default commands in Staempfli\UniversalGenerator\Application
+    * - To add or extend commands you must use the method $application->addGeneratorCommand
+    */
+    // $application->addGeneratorCommand('template:generate', 'VendorName\ProjectName\Command\TemplateGenerateCommand');
+    
+    $application->run();
+    ```
 
-* If you want to contribute with new templates, just do the following:
+0. Usually you might want to extend the default `template:generate` command. You can do that as follows:
+ 
+    *  [Extend Template Generate Command](docs/extend-generate-command.md)
+    
+0. Create the templates that will be generated:
 
-    0. Fork this project
-    0. Create a new template following the manual (./docs/createTemplates.md)[How to create templates]
+    *  [How to create templates](docs/createTemplates.md)
+
+
