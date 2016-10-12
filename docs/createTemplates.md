@@ -15,6 +15,7 @@ In order to create new templates you just need to do the following.
 0. Create a new folder called `.no-copied-config` into you template
 0. Add there a description.txt file with a short description that clarifies what the template is for:
 	* This description will be show when running `./mg2-codegen.phar template:info <template>`  		 
+
 ### OPTIONAL
 
 * If your template requires some manual steps after the code is generated, you can document this info in:
@@ -30,8 +31,11 @@ In order to create new templates you just need to do the following.
 		  1: <template-name>
 		```
 
-## Important info
+### Example
 
+You can check a template example here [Template Samples](../samples)
+
+## Important info
 
 ### Built-in Properties
 
