@@ -76,10 +76,12 @@ class TemplateHelper
             }
         }
 
-        $directoryIterator = $fileHelper->getDirectoriesIterator($this->privateTemplatesDir);
-        foreach ($directoryIterator as $dir) {
-            if ($dir->isDir()) {
-                $templates[$dir->getFilename()] = 'private';
+        if (is_dir($this->privateTemplatesDir)) {
+            $directoryIterator = $fileHelper->getDirectoriesIterator($this->privateTemplatesDir);
+            foreach ($directoryIterator as $dir) {
+                if ($dir->isDir()) {
+                    $templates[$dir->getFilename()] = 'private';
+                }
             }
         }
 
