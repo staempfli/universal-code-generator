@@ -226,10 +226,14 @@ class PropertiesTask
         foreach ($this->properties as $property => $value) {
             $propertyUcFirst = ucfirst($property);
             $valueUcFirst = ucfirst($value);
-            $this->setProperty($propertyUcFirst, $valueUcFirst);
+            if (!array_key_exists($propertyUcFirst, $this->properties)) {
+                $this->setProperty($propertyUcFirst, $valueUcFirst);
+            }
             $propertyLcFirst = lcfirst($property);
             $valueLowerCaseFirst = strtolower($value);
-            $this->setProperty($propertyLcFirst, $valueLowerCaseFirst);
+            if (!array_key_exists($propertyLcFirst, $this->properties)) {
+                $this->setProperty($propertyLcFirst, $valueLowerCaseFirst);
+            }
         }
     }
 

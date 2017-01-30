@@ -23,6 +23,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TemplateGenerateCommand extends Command
 {
+    protected $propertiesTask;
+
     /**
      * Template arg name
      *
@@ -106,10 +108,8 @@ class TemplateGenerateCommand extends Command
         }
 
         // Set default properties configuration if not yet set
-        $io = new SymfonyStyle($input, $output);
-        $propertiesTask = new PropertiesTask($io);
-        if (!$propertiesTask->defaultPropertiesExist()) {
-            $propertiesTask->setDefaultPropertiesConfigurationFile();
+        if (!$this->propertiesTask->defaultPropertiesExist()) {
+            $this->propertiesTask->setDefaultPropertiesConfigurationFile();
         }
     }
 
@@ -141,30 +141,29 @@ class TemplateGenerateCommand extends Command
         $io->writeln(sprintf('<comment>Template Generate: %s</comment>', $templateName));
 
         // Set properties
-        $propertiesTask = new PropertiesTask($io);
-        $propertiesTask->loadDefaultProperties();
+        $this->propertiesTask->loadDefaultProperties();
 
-        $this->beforeAskInputProperties($templateName, $propertiesTask, $io);
-        $propertiesTask->displayLoadedProperties();
+        $this->beforeAskInputProperties($templateName, $io);
+        $this->propertiesTask->displayLoadedProperties();
 
         // Ask input properties
-        $propertiesTask->askAndSetInputPropertiesForTemplate($templateName);
+        $this->propertiesTask->askAndSetInputPropertiesForTemplate($templateName);
 
         // Process properties lower and upper
-        $propertiesTask->generateMultiCaseProperties();
+        $this->propertiesTask->generateMultiCaseProperties();
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $io->writeln('<info>All Properties to replace in template</info>');
-            $propertiesTask->displayLoadedProperties();
+            $this->propertiesTask->displayLoadedProperties();
         }
 
-        $this->beforeGenerate($templateName, $propertiesTask, $io);
+        $this->beforeGenerate($templateName, $io);
 
         // Generate code files
-        $generateCodeTask = new GenerateCodeTask($templateName, $propertiesTask->getProperties(), $io);
+        $generateCodeTask = new GenerateCodeTask($templateName, $this->propertiesTask->getProperties(), $io);
         $generateCodeTask->generateCode($input->getOption($this->optionDryRun));
 
-        $this->afterGenerate($templateName, $propertiesTask, $io);
+        $this->afterGenerate($templateName, $io);
 
         $io->success('CODE GENERATED!');
     }
@@ -217,7 +216,16 @@ class TemplateGenerateCommand extends Command
         }
 
         $newInput = new ArrayInput($arguments);
-        return $command->run($newInput, $output);
+        return $command->run($newInput, $output, $this->propertiesTask);
+    }
+
+    public function run(InputInterface $input, OutputInterface $output, $propertiesTask = NULL)
+    {
+        if(!$propertiesTask) {
+            $io = new SymfonyStyle($input, $output);
+            $this->propertiesTask = new PropertiesTask($io);
+        }
+        parent::run($input, $output);
     }
 
     /**
@@ -235,20 +243,18 @@ class TemplateGenerateCommand extends Command
      * Set specific properties before step to ask user for manual input
      *
      * @param $templateName
-     * @param PropertiesTask $propertiesTask
      * @return void
      */
-    protected function beforeAskInputProperties($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
+    protected function beforeAskInputProperties($templateName, SymfonyStyle $io)
     {}
 
     /**
      * Actions right before code is generated
      *
      * @param $templateName
-     * @param PropertiesTask $propertiesTask
      * @param SymfonyStyle $io
      */
-    protected function beforeGenerate($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
+    protected function beforeGenerate($templateName, SymfonyStyle $io)
     {
         $fileHelper = new FileHelper();
         $io->text(sprintf('Code will be generated at following path <options=bold>%s</>', $fileHelper->getModuleDir()));
@@ -262,13 +268,12 @@ class TemplateGenerateCommand extends Command
      * Actions right after code is generated
      *
      * @param $templateName
-     * @param PropertiesTask $propertiesTask
      * @param SymfonyStyle $io
      */
-    protected function afterGenerate($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
+    protected function afterGenerate($templateName, SymfonyStyle $io)
     {
         $configHelper = new ConfigHelper();
-        $afterGenerateInfo = $configHelper->getTemplateAfterGenerateInfo($templateName, $propertiesTask->getProperties());
+        $afterGenerateInfo = $configHelper->getTemplateAfterGenerateInfo($templateName, $this->propertiesTask->getProperties());
         if ($afterGenerateInfo) {
             $io->note('This template needs you to take care of the following manual steps:');
             $io->text($afterGenerateInfo);
