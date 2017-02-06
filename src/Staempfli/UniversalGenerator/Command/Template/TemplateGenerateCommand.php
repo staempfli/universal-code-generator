@@ -10,7 +10,6 @@ namespace Staempfli\UniversalGenerator\Command\Template;
 
 use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Tasks\GenerateCodeTask;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -109,7 +108,6 @@ class TemplateGenerateCommand extends AbstractTemplateCommand
 
         $this->beforeAskInputProperties();
         $this->propertiesTask->askAndSetInputPropertiesForTemplate($this->templateName);
-        $this->propertiesTask->generateMultiCaseProperties();
 
         if ($this->io->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->io->writeln('<info>All Properties to replace in template</info>');
@@ -136,28 +134,6 @@ class TemplateGenerateCommand extends AbstractTemplateCommand
             $this->io->note('This template needs you to take care of the following manual steps:');
             $this->io->text($afterGenerateInfo);
         }
-    }
-
-    /**
-     * @param $templateName
-     * @return string $resultCode
-     */
-    protected function runCommandForAnotherTemplate($templateName)
-    {
-        $originalTemplate = $this->templateName;
-        $command = $this->getApplication()->find($this->getName());
-        $arguments = [
-            'command' => $this->getName(),
-            AbstractTemplateCommand::ARG_TEMPLATE => $templateName
-        ];
-        foreach ($this->io->getInput()->getOptions() as $option => $value) {
-            if ($value) {
-                $arguments['--' . $option] = $value;
-            }
-        }
-        $newInput = new ArrayInput($arguments);
-        $command->run($newInput, $this->io->getOutput());
-        $this->templateName = $originalTemplate;
     }
 
 }
