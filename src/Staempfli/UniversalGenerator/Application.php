@@ -19,28 +19,28 @@ class Application extends SymfonyConsoleApplication
      * @var array
      */
     protected $generatorCommands = [
-        'config:set' => 'Staempfli\UniversalGenerator\Command\ConfigSetCommand',
-        'config:display' => 'Staempfli\UniversalGenerator\Command\ConfigDisplayCommand',
-        'config:unset' => 'Staempfli\UniversalGenerator\Command\ConfigUnsetCommand',
-        'template:list' => 'Staempfli\UniversalGenerator\Command\TemplateListCommand',
-        'template:info' => 'Staempfli\UniversalGenerator\Command\TemplateInfoCommand',
-        'template:generate' => 'Staempfli\UniversalGenerator\Command\TemplateGenerateCommand',
+        'config:set' => 'Staempfli\UniversalGenerator\Command\Config\ConfigSetCommand',
+        'config:display' => 'Staempfli\UniversalGenerator\Command\Config\ConfigDisplayCommand',
+        'config:unset' => 'Staempfli\UniversalGenerator\Command\Config\ConfigUnsetCommand',
+        'template:list' => 'Staempfli\UniversalGenerator\Command\Template\TemplateListCommand',
+        'template:info' => 'Staempfli\UniversalGenerator\Command\Template\TemplateInfoCommand',
+        'template:generate' => 'Staempfli\UniversalGenerator\Command\Template\TemplateGenerateCommand',
     ];
 
+    /**
+     * @param string $version
+     */
     public function __construct($version = 'UNKNOWN')
     {
         $fileHelper = new FileHelper();
-        $name = $fileHelper->getCommandName();
+        $applicationName = $fileHelper->getApplicationFileName();
 
-        parent::__construct($name, $version);
+        parent::__construct($applicationName, $version);
     }
 
     /**
-     * Add generator command
-     * - This method also overrides a command, if an existing one has the same name.
-     *
-     * @param $name
-     * @param $class
+     * @param string $name
+     * @param sting $class
      */
     public function addGeneratorCommand($name, $class)
     {
@@ -59,8 +59,6 @@ class Application extends SymfonyConsoleApplication
     }
 
     /**
-     * Edit default run to load generator commands at the beginning.
-     *
      * @param InputInterface|null $input
      * @param OutputInterface|null $output
      * @return int

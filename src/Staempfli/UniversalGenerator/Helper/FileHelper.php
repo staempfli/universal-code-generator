@@ -13,15 +13,10 @@ use RecursiveIteratorIterator;
 
 class FileHelper
 {
-    /**
-     * @var string
-     */
-    protected $defaultCommandName = "codegen-universal";
+    const DEFAULT_APPLICATION_NAME = "codegen-universal";
 
     /**
-     * Get Project Base Dir
-     *
-     * @return mixed
+     * @return string
      */
     public function getProjectBaseDir()
     {
@@ -29,19 +24,14 @@ class FileHelper
     }
 
     /**
-     * Get module directory where code generator will be executed
-     *
      * @return string
      */
-    public function getModuleDir()
+    public function getRootDir()
     {
         return getcwd();
     }
 
     /**
-     * Get Phar path
-     * - Returns the filename if valid, empty string otherwise.
-     *
      * @return string
      */
     public function getPharPath()
@@ -50,11 +40,9 @@ class FileHelper
     }
 
     /**
-     * Get Command name according to file basename
-     *
      * @return string
      */
-    public function getCommandName()
+    public function getApplicationFileName()
     {
         if ($this->getPharPath()) {
             return basename($this->getPharPath());
@@ -62,12 +50,10 @@ class FileHelper
         if (defined('COMMAND_NAME')) {
             return COMMAND_NAME;
         }
-        return $this->defaultCommandName;
+        return self::DEFAULT_APPLICATION_NAME;
     }
 
     /**
-     * Get users home
-     *
      * @return mixed
      */
     public function getUsersHome()
@@ -76,8 +62,6 @@ class FileHelper
     }
 
     /**
-     * Get Directories Iterator from specific directory
-     *
      * @param $dir
      * @return RecursiveDirectoryIterator
      */
@@ -89,8 +73,6 @@ class FileHelper
     }
 
     /**
-     * Get Files Iterator from specific directory
-     *
      * @param $dir
      * @return RecursiveIteratorIterator
      */

@@ -8,11 +8,11 @@
 
 namespace Staempfli\UniversalGenerator\Tasks;
 
-use Staempfli\UniversalGenerator\Helper\ConfigHelper;
+use Staempfli\UniversalGenerator\Helper\Template\ConfigTemplateHelper;
 use Staempfli\UniversalGenerator\Helper\FileHelper;
+use Staempfli\UniversalGenerator\Helper\IOHelper;
 use Staempfli\UniversalGenerator\Helper\PropertiesHelper;
-use Staempfli\UniversalGenerator\Helper\TemplateHelper;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Staempfli\UniversalGenerator\Helper\Template\FileTemplateHelper;
 
 class GenerateCodeTask
 {
@@ -20,180 +20,113 @@ class GenerateCodeTask
      * @var string
      */
     protected $templateName;
-
     /**
      * @var array
      */
     protected $properties;
-
     /**
-     * @var SymfonyStyle
+     * @var IOHelper
      */
     protected $io;
-
+    /**
+     * @var FileTemplateHelper
+     */
+    protected $fileTemplateHelper;
+    /**
+     * @var PropertiesHelper
+     */
+    protected $propertiesHelper;
+    /**
+     * @var ConfigTemplateHelper
+     */
+    protected $configTemplateHelper;
     /**
      * @var FileHelper
      */
     protected $fileHelper;
 
     /**
-     * @var TemplateHelper
-     */
-    protected $templateHelper;
-
-    /**
      * GenerateCodeTask constructor.
-     * @param $templateName
+     * @param string $templateName
      * @param array $properties
-     * @param SymfonyStyle $io
+     * @param IOHelper $io
      */
-    public function __construct($templateName, array $properties, SymfonyStyle $io)
+    public function __construct($templateName, array $properties, IOHelper $io)
     {
         $this->templateName = $templateName;
         $this->properties = $properties;
         $this->io = $io;
+        $this->fileTemplateHelper = new FileTemplateHelper();
+        $this->propertiesHelper = new PropertiesHelper();
+        $this->configTemplateHelper = new ConfigTemplateHelper();
+        $this->fileHelper = new FileHelper();
     }
 
     /**
-     * Get File Helper
-     *
-     * @return FileHelper
-     */
-    protected function getFileHelper()
-    {
-        if (!$this->fileHelper) {
-            $this->fileHelper = new FileHelper();
-        }
-
-        return $this->fileHelper;
-    }
-
-    /**
-     * Get Template Helper
-     *
-     * @return TemplateHelper
-     */
-    protected function getTemplateHelper()
-    {
-        if (!$this->templateHelper) {
-            $this->templateHelper = new TemplateHelper();
-        }
-
-        return $this->templateHelper;
-    }
-
-    /**
-     * Generate code
-     * - Generates code according to template and properties set on constructor
      * @param bool $dryRun
      */
     public function generateCode($dryRun = false)
     {
-        $templateFilesIterator = $this->getTemplateHelper()->getTemplateFilesIterator($this->templateName);
-        $propertiesHelper = new PropertiesHelper();
-        foreach ($templateFilesIterator as $file) {
-            // skip configuration files
-            if (strpos($file->getPathname(), ConfigHelper::TEMPLATE_CONFIG_FOLDER) !== false) {
-                continue;
+        $templateFiles = $this->fileTemplateHelper->getTemplateFiles($this->templateName);
+        foreach ($templateFiles as $file) {
+            $parsedFilePath = $this->propertiesHelper->replacePropertiesInText($file['path'], $this->properties);
+            $parsedFileContent = $this->propertiesHelper->replacePropertiesInText($file['content'], $this->properties);
+            if (!$dryRun) {
+                $this->generateFileWithContent($parsedFilePath, $parsedFileContent);
             }
-            $filename = $propertiesHelper->replacePropertiesInText($file->getPathname(), $this->properties);
-            $fileContent = $propertiesHelper->replacePropertiesInText(file_get_contents($file->getPathname()), $this->properties);
-            $this->generateFileWithContent($filename, $fileContent, $dryRun);
+            $this->io->writeln(sprintf('<options=bold>File Created:</> %s', $parsedFilePath));
         }
-
     }
 
     /**
-     * Generate and write file
-     *
-     * @param $filename
-     * @param $fileContent
-     * @param bool $dryRun
+     * @param string $filePath
+     * @param string $fileContent
      */
-    protected function generateFileWithContent($filename, $fileContent, $dryRun = false)
+    protected function generateFileWithContent($filePath, $fileContent)
     {
-        $filenameAbsolutePath = $this->getAbsolutePathToCopyTo($filename);
-        if (file_exists($filenameAbsolutePath)) {
-            if (!$this->shouldOverwriteFile($filename)) {
-                $this->showInfoFileNotCopied($filename, $fileContent);
+        if (file_exists($filePath)) {
+            if (!$this->shouldOverwriteFile($filePath)) {
+                $this->showInfoFileNotCopied($filePath, $fileContent);
                 return;
             }
         }
 
-        // Do not create any files on dryRun mode
-        if (!$dryRun) {
-            $this->prepareDirToWriteTo($filenameAbsolutePath);
-            if(!file_put_contents($filenameAbsolutePath, $fileContent)) {
-                $this->io->error(sprintf('There was an error copying the file "%s"', $filename));
-                $this->showInfoFileNotCopied($filename, $fileContent);
-                return;
-            }
+        $this->prepareDirToWriteTo($filePath);
+        if (!file_put_contents($filePath, $fileContent)) {
+            $this->io->error(sprintf('There was an error copying the file "%s"', $filePath));
+            $this->showInfoFileNotCopied($filePath, $fileContent);
         }
-
-        $this->io->writeln(sprintf('<options=bold>File Created:</> %s', $this->getRelativePathToCopyTo($filename)));
     }
 
     /**
-     * Get relative path to Template for file
-     *
-     * @param $filename
-     * @return string
-     */
-    protected function getRelativePathToCopyTo($filename)
-    {
-        $relativePath = substr($filename, strlen($this->getTemplateHelper()->getTemplateDir($this->templateName)));
-        $relativePathFixed = ltrim($relativePath, '/');
-        return $relativePathFixed;
-    }
-
-    /**
-     * Get Absolute path to copy files to
-     *
-     * @param $filename
-     * @return string
-     */
-    protected function getAbsolutePathToCopyTo($filename)
-    {
-        return $this->getFileHelper()->getModuleDir() . '/' . $this->getRelativePathToCopyTo($filename);
-    }
-
-    /**
-     * Confirm with user whether to override existing file
-     *
-     * @param $filename
+     * @param string $filePath
      * @return bool|string
      */
-    protected function shouldOverwriteFile($filename)
+    protected function shouldOverwriteFile($filePath)
     {
-        $filenameRelativePath = $this->getRelativePathToCopyTo($filename);
-        return $this->io->confirm(sprintf('%s already exists, would you like to overwrite it?', $filenameRelativePath), false);
+        return $this->io->confirm(sprintf('%s already exists, would you like to overwrite it?', $filePath), false);
     }
 
+
     /**
-     * Display info for not copied file
-     * - That way, the user can manually copy this content if needed
-     *
-     * @param $filename
-     * @param $templateContent
+     * @param string $filePath
+     * @param string $templateContent
      */
-    protected function showInfoFileNotCopied($filename, $templateContent)
+    protected function showInfoFileNotCopied($filePath, $templateContent)
     {
-        $filenameRelativePath = $this->getRelativePathToCopyTo($filename);
-        $this->io->warning(sprintf('%s NOT generated', $filenameRelativePath));
+        $this->io->warning(sprintf('%s NOT generated', $filePath));
         $this->io->text($templateContent);
-        $this->io->note(sprintf('You can copy the previous code and add it manually on %s', $filenameRelativePath));
+        $this->io->note(sprintf('You can copy the previous code and add it manually on %s', $filePath));
     }
 
     /**
-     * Prepare directory where file will be written into
-     *
-     * @param $filenameAbsolutePath
+     * @param string $filePath
      */
-    protected function prepareDirToWriteTo($filenameAbsolutePath)
+    protected function prepareDirToWriteTo($filePath)
     {
-        $dirToWrite = dirname($filenameAbsolutePath);
+        $dirToWrite = dirname($filePath);
         if (!is_dir($dirToWrite)) {
-            mkdir($dirToWrite, 0777, true);
+            mkdir($dirToWrite, 0764, true);
         }
     }
 

@@ -1,16 +1,17 @@
 <?php
 /**
- * ConfigHelper
+ * ConfigTemplateHelper
  *
  * @copyright Copyright (c) 2016 Staempfli AG
  * @author    juan.alonso@staempfli.com
  */
 
-namespace Staempfli\UniversalGenerator\Helper;
+namespace Staempfli\UniversalGenerator\Helper\Template;
 
+use Staempfli\UniversalGenerator\Helper\PropertiesHelper;
 use Symfony\Component\Yaml\Yaml;
 
-class ConfigHelper
+class ConfigTemplateHelper extends AbstractTemplateHelper
 {
     /**
      * Config files constants
@@ -29,29 +30,25 @@ class ConfigHelper
      * @var string
      */
     protected $afterGenerateFilename = self::TEMPLATE_CONFIG_FOLDER . '/after-generate-info.txt';
-    /**
-     * @var TemplateHelper
-     */
-    protected $templateHelper;
 
     /**
-     * ConfigHelper constructor.
+     * @var PropertiesHelper
      */
+    protected $propertiesHelper;
+
     public function __construct()
     {
-        $this->templateHelper = new TemplateHelper();
+        $this->propertiesHelper = new PropertiesHelper();
     }
 
     /**
-     * Read configuration yml file and return template dependencies
-     *
-     * @param $templateName
+     * @param string $templateName
      * @return array $templatesDependencies
      */
     public function getTemplateDependencies($templateName)
     {
         $dependencies = [];
-        $templateDir = $this->templateHelper->getTemplateDir($templateName);
+        $templateDir = $this->getTemplateDir($templateName);
         $dependenciesFile = $templateDir . '/' . $this->configFilename;
 
         if (file_exists($dependenciesFile)) {
@@ -65,14 +62,12 @@ class ConfigHelper
     }
 
     /**
-     * Get description info for an specific template
-     *
-     * @param $templateName
+     * @param string $templateName
      * @return bool|string
      */
     public function getTemplateDescription($templateName)
     {
-        $templateDir = $this->templateHelper->getTemplateDir($templateName);
+        $templateDir = $this->getTemplateDir($templateName);
         $descriptionFile = $templateDir . '/' . $this->descriptionFilename;
 
         if (file_exists($descriptionFile)) {
@@ -83,20 +78,17 @@ class ConfigHelper
     }
 
     /**
-     * Get after generation info for an specific template
-     *
-     * @param $templateName
+     * @param string $templateName
      * @param array $properties
      * @return bool|string
      */
     public function getTemplateAfterGenerateInfo($templateName, array $properties)
     {
-        $templateDir = $this->templateHelper->getTemplateDir($templateName);
+        $templateDir = $this->getTemplateDir($templateName);
         $afterGenerateFile = $templateDir . '/' . $this->afterGenerateFilename;
 
         if (file_exists($afterGenerateFile)) {
-            $propertiesHelper = new PropertiesHelper();
-            return $propertiesHelper->replacePropertiesInText(file_get_contents($afterGenerateFile), $properties);
+            return $this->propertiesHelper->replacePropertiesInText(file_get_contents($afterGenerateFile), $properties);
         }
 
         return false;
