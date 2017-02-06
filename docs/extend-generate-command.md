@@ -9,25 +9,10 @@
 0. You can implement the following methods to add your customisations:
 
     ```
-    /**
-     * Some checks or specific actions before command execution
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return bool|string $resultCode
-     * @return void
-     */
-    protected function beforeExecute(InputInterface $input, OutputInterface $output)
+    protected function beforeExecute()
     {}
 
-    /**
-     * Set specific properties before step to ask user for manual input
-     *
-     * @param $templateName
-     * @param PropertiesTask $propertiesTask
-     * @return void
-     */
-    protected function beforeAskInputProperties($templateName, PropertiesTask $propertiesTask, SymfonyStyle $io)
+    protected function beforeAskInputProperties()
     {}
     ```
     
