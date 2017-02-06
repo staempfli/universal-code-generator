@@ -53,12 +53,18 @@ class PropertiesTask
     }
 
     /**
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param string $value
      */
     public function setProperty($property, $value)
     {
-        $this->properties[$property] = $value;
+        $propertyUcFirst = ucfirst($property);
+        $valueUcFirst = ucfirst($value);
+        $this->properties[$propertyUcFirst] = $valueUcFirst;
+
+        $propertyLcFirst = lcfirst($property);
+        $valueLowerCase = strtolower($value);
+        $this->properties[$propertyLcFirst] = $valueLowerCase;
     }
 
     /**
@@ -68,7 +74,9 @@ class PropertiesTask
      */
     public function addProperties(array $properties)
     {
-        $this->properties = array_merge($this->properties, $properties);
+        foreach ($properties as $property => $value) {
+            $this->setProperty($property, $value);
+        }
     }
 
     /**
@@ -188,29 +196,12 @@ class PropertiesTask
      */
     protected function shouldAskForProperty($property, array $propertiesAlreadyAsked)
     {
-        // Case insensitive check among current properties to ask
         if (in_array(strtolower($property), array_map('strtolower', $propertiesAlreadyAsked))) {
             return false;
         }
-        // Case insensitive check among already existing properties
         if (in_array(strtolower($property), array_map('strtolower', array_keys($this->properties)))) {
             return false;
         }
         return true;
     }
-
-    public function generateMultiCaseProperties()
-    {
-        foreach ($this->properties as $property => $value) {
-            $propertyUcFirst = ucfirst($property);
-            if (!array_key_exists($propertyUcFirst, $this->properties)) {
-              $this->setProperty($propertyUcFirst, ucfirst($value));
-            }
-            $propertyLcFirst = lcfirst($property);
-            if (!array_key_exists($propertyLcFirst, $this->properties)) {
-                $this->setProperty($propertyLcFirst, strtolower($value));
-            }
-        }
-    }
-
 }
