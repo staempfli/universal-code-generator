@@ -29,9 +29,13 @@ This tool can be used as base for creating code generators for specific framewor
     ```
     #!/usr/bin/env php
     <?php
-    // application.php
-    
-    require __DIR__ .'/../vendor/autoload.php';
+    $composerAutoload = __DIR__ . '/../../../autoload.php';
+
+    if (file_exists($composerAutoload)) {
+        require_once $composerAutoload;
+    } else {
+        require_once __DIR__ . ' /../vendor/autoload.php';
+    }
     
     /**
     * Shortcut constant for the project root directory
