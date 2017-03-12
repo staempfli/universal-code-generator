@@ -1,6 +1,6 @@
 <?php
 /**
- * PropertiesTask
+ * PropertiesHelper
  *
  * @copyright Copyright (c) 2016 Staempfli AG
  * @author    juan.alonso@staempfli.com

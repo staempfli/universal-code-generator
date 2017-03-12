@@ -53,7 +53,7 @@ class TemplateInfoCommand extends AbstractTemplateCommand
 
     protected function displayDescription()
     {
-        $description = $this->configTemplateHelper->getTemplateDescription($this->templateName);
+        $description = $this->templateFilesHelper->getTemplateDescription($this->templateName);
         if ($description) {
             $this->io->text($description);
         } else {
@@ -64,7 +64,7 @@ class TemplateInfoCommand extends AbstractTemplateCommand
 
     protected function displayDependencies()
     {
-        $dependencies = $this->configTemplateHelper->getTemplateDependencies($this->templateName);
+        $dependencies = $this->templateFilesHelper->getTemplateDependencies($this->templateName);
         if ($dependencies) {
             $this->io->note('DEPENDENCIES - This module will also load the following templates:');
             $this->io->text($dependencies);

@@ -1,17 +1,14 @@
 <?php
 /**
- * FileHelper
+ * ApplicationFilesHelper
  *
  * @copyright Copyright (c) 2016 Staempfli AG
  * @author    juan.alonso@staempfli.com
  */
 
-namespace Staempfli\UniversalGenerator\Helper;
+namespace Staempfli\UniversalGenerator\Helper\Files;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-
-class FileHelper
+class ApplicationFilesHelper extends AbstractFilesHelper
 {
     const DEFAULT_APPLICATION_NAME = "codegen-universal";
 
@@ -61,26 +58,4 @@ class FileHelper
         return $_SERVER['HOME'];
     }
 
-    /**
-     * @param $dir
-     * @return RecursiveDirectoryIterator
-     */
-    public function getDirectoriesIterator($dir)
-    {
-        $directoryIterator = new RecursiveDirectoryIterator($dir);
-        $directoryIterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
-        return $directoryIterator;
-    }
-
-    /**
-     * @param $dir
-     * @return RecursiveIteratorIterator
-     */
-    public function getFilesIterator($dir)
-    {
-        $directoryIterator = $this->getDirectoriesIterator($dir);
-        $fileIterator = new RecursiveIteratorIterator($directoryIterator);
-
-        return $fileIterator;
-    }
 }

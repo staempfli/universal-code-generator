@@ -29,7 +29,7 @@ class TemplateListCommand extends AbstractTemplateCommand
     {
         $this->io->writeln('<comment>Templates List</comment>');
 
-        foreach ($this->fileTemplateHelper->getTemplatesList() as $templateName => $type)
+        foreach ($this->templateFilesHelper->getTemplatesList() as $templateName => $type)
         {
             if ($type == 'private') {
                 $templateName = $templateName . ' (Private)';

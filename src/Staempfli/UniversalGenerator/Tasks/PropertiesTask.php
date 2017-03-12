@@ -8,10 +8,10 @@
 
 namespace Staempfli\UniversalGenerator\Tasks;
 
-use Staempfli\UniversalGenerator\Helper\FileHelper;
+use Staempfli\UniversalGenerator\Handler\TemplateFilesHandler;
+use Staempfli\UniversalGenerator\Helper\Files\ApplicationFilesHelper;
 use Staempfli\UniversalGenerator\Helper\IOHelper;
 use Staempfli\UniversalGenerator\Helper\PropertiesHelper;
-use Staempfli\UniversalGenerator\Helper\Template\FileTemplateHelper;
 use Symfony\Component\Yaml\Yaml;
 
 class PropertiesTask
@@ -33,13 +33,13 @@ class PropertiesTask
      */
     protected $io;
     /**
-     * @var FileHelper
+     * @var ApplicationFilesHelper
      */
-    protected $fileHelper;
+    protected $applicationFilesHelper;
     /**
-     * @var FileTemplateHelper
+     * @var TemplateFilesHandler
      */
-    protected $fileTemplateHelper;
+    protected $templateFilesHandler;
 
     /**
      * @param IOHelper $io
@@ -48,8 +48,8 @@ class PropertiesTask
     {
         $this->io = $io;
         $this->propertiesHelper = new PropertiesHelper();
-        $this->fileHelper = new FileHelper();
-        $this->fileTemplateHelper = new FileTemplateHelper();
+        $this->applicationFilesHelper = new ApplicationFilesHelper();
+        $this->templateFilesHandler = new TemplateFilesHandler();
     }
 
     /**
@@ -92,8 +92,8 @@ class PropertiesTask
      */
     public function getDefaultPropertiesFile()
     {
-        $configFilename = pathinfo($this->fileHelper->getApplicationFileName(), PATHINFO_FILENAME);
-        return $this->fileHelper->getUsersHome() . '/.' . $configFilename . '/' . $this->defaultPropertiesFilename;
+        $configFilename = pathinfo($this->applicationFilesHelper->getApplicationFileName(), PATHINFO_FILENAME);
+        return $this->applicationFilesHelper->getUsersHome() . '/.' . $configFilename . '/' . $this->defaultPropertiesFilename;
     }
 
     /**
@@ -112,7 +112,7 @@ class PropertiesTask
      */
     public function setDefaultPropertiesConfigurationFile()
     {
-        $originalPropertiesFilename = $this->fileHelper->getProjectBaseDir() . '/' . $this->defaultPropertiesFilename;
+        $originalPropertiesFilename = $this->applicationFilesHelper->getProjectBaseDir() . '/' . $this->defaultPropertiesFilename;
         $originalProperties = Yaml::parse(file_get_contents($originalPropertiesFilename));
 
         $defaultProperties = [];
@@ -179,7 +179,7 @@ class PropertiesTask
      */
     protected function getAllPropertiesInTemplate($templateName)
     {
-        $templateFiles = $this->fileTemplateHelper->getTemplateFiles($templateName);
+        $templateFiles = $this->templateFilesHandler->getTemplateFiles($templateName);
         $propertiesInTemplate = [];
         foreach ($templateFiles as $file) {
             $propertiesInFilename = $this->propertiesHelper->getPropertiesInText($file['path']);

@@ -8,7 +8,7 @@
 
 namespace Staempfli\UniversalGenerator;
 
-use Staempfli\UniversalGenerator\Helper\FileHelper;
+use Staempfli\UniversalGenerator\Helper\Files\ApplicationFilesHelper;
 use Symfony\Component\Console\Application as SymfonyConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,8 +32,8 @@ class Application extends SymfonyConsoleApplication
      */
     public function __construct($version = 'UNKNOWN')
     {
-        $fileHelper = new FileHelper();
-        $applicationName = $fileHelper->getApplicationFileName();
+        $applicationFilesHelper = new ApplicationFilesHelper();
+        $applicationName = $applicationFilesHelper->getApplicationFileName();
 
         parent::__construct($applicationName, $version);
     }

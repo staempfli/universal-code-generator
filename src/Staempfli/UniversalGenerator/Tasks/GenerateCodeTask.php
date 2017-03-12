@@ -8,11 +8,9 @@
 
 namespace Staempfli\UniversalGenerator\Tasks;
 
-use Staempfli\UniversalGenerator\Helper\Template\ConfigTemplateHelper;
-use Staempfli\UniversalGenerator\Helper\FileHelper;
 use Staempfli\UniversalGenerator\Helper\IOHelper;
 use Staempfli\UniversalGenerator\Helper\PropertiesHelper;
-use Staempfli\UniversalGenerator\Helper\Template\FileTemplateHelper;
+use Staempfli\UniversalGenerator\Handler\TemplateFilesHandler;
 
 class GenerateCodeTask
 {
@@ -29,21 +27,13 @@ class GenerateCodeTask
      */
     protected $io;
     /**
-     * @var FileTemplateHelper
+     * @var TemplateFilesHandler
      */
-    protected $fileTemplateHelper;
+    protected $templateFilesHandler;
     /**
      * @var PropertiesHelper
      */
     protected $propertiesHelper;
-    /**
-     * @var ConfigTemplateHelper
-     */
-    protected $configTemplateHelper;
-    /**
-     * @var FileHelper
-     */
-    protected $fileHelper;
 
     /**
      * GenerateCodeTask constructor.
@@ -56,10 +46,8 @@ class GenerateCodeTask
         $this->templateName = $templateName;
         $this->properties = $properties;
         $this->io = $io;
-        $this->fileTemplateHelper = new FileTemplateHelper();
+        $this->templateFilesHandler = new TemplateFilesHandler();
         $this->propertiesHelper = new PropertiesHelper();
-        $this->configTemplateHelper = new ConfigTemplateHelper();
-        $this->fileHelper = new FileHelper();
     }
 
     /**
@@ -67,7 +55,7 @@ class GenerateCodeTask
      */
     public function generateCode($dryRun = false)
     {
-        $templateFiles = $this->fileTemplateHelper->getTemplateFiles($this->templateName);
+        $templateFiles = $this->templateFilesHandler->getTemplateFiles($this->templateName);
         foreach ($templateFiles as $file) {
             $parsedFilePath = $this->propertiesHelper->replacePropertiesInText($file['path'], $this->properties);
             $parsedFileContent = $this->propertiesHelper->replacePropertiesInText($file['content'], $this->properties);

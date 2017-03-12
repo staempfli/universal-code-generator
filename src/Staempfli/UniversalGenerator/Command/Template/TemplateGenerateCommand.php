@@ -8,7 +8,8 @@
 
 namespace Staempfli\UniversalGenerator\Command\Template;
 
-use Staempfli\UniversalGenerator\Helper\FileHelper;
+use Staempfli\UniversalGenerator\Helper\Files\ApplicationFilesHelper;
+use Staempfli\UniversalGenerator\Helper\PropertiesHelper;
 use Staempfli\UniversalGenerator\Tasks\GenerateCodeTask;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,14 +22,19 @@ class TemplateGenerateCommand extends AbstractTemplateCommand
     const OPTION_ROOT_DIR = 'root-dir';
 
     /**
-     * @var FileHelper
+     * @var ApplicationFilesHelper
      */
-    protected $fileHelper;
+    protected $applicationFilesHelper;
+    /**
+     * @var PropertiesHelper
+     */
+    protected $propertiesHelper;
 
     public function __construct($name = null)
     {
         parent::__construct($name);
-        $this->fileHelper = new FileHelper();
+        $this->applicationFilesHelper = new ApplicationFilesHelper();
+        $this->propertiesHelper = new PropertiesHelper();
     }
 
     public function configure()
@@ -121,7 +127,7 @@ class TemplateGenerateCommand extends AbstractTemplateCommand
 
     protected function beforeGenerate()
     {
-        $this->io->text(sprintf('Code will be generated at following path <options=bold>%s</>', $this->fileHelper->getRootDir()));
+        $this->io->text(sprintf('Code will be generated at following path <options=bold>%s</>', $this->applicationFilesHelper->getRootDir()));
         if (!$this->io->confirm('Do you want to continue?', true)) {
             throw new \Exception('Execution stopped');
         }
@@ -129,11 +135,11 @@ class TemplateGenerateCommand extends AbstractTemplateCommand
 
     protected function afterGenerate()
     {
-        $afterGenerateInfo = $this->configTemplateHelper->getTemplateAfterGenerateInfo($this->templateName, $this->propertiesTask->getProperties());
-        if ($afterGenerateInfo) {
+        $afterGenerateFile = $this->templateFilesHelper->getAfterGenerateFile($this->templateName);
+        if ($afterGenerateFile) {
+            $afterGenerateInfo = $this->propertiesHelper->replacePropertiesInText(file_get_contents($afterGenerateFile), $this->propertiesTask->getProperties());
             $this->io->note('This template needs you to take care of the following manual steps:');
             $this->io->text($afterGenerateInfo);
         }
     }
-
 }

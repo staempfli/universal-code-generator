@@ -13,7 +13,6 @@ use Staempfli\UniversalGenerator\Tasks\PropertiesTask;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Staempfli\UniversalGenerator\Helper\Template\ConfigTemplateHelper;
 
 abstract class AbstractCommand extends Command
 {
@@ -25,17 +24,6 @@ abstract class AbstractCommand extends Command
      * @var PropertiesTask
      */
     protected $propertiesTask;
-
-    /**
-     * @var ConfigTemplateHelper
-     */
-    protected $configTemplateHelper;
-
-    public function __construct($name = null)
-    {
-        parent::__construct($name);
-        $this->configTemplateHelper = new ConfigTemplateHelper();
-    }
 
     public function run(InputInterface $input, OutputInterface $output)
     {
