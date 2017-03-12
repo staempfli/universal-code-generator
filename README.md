@@ -69,4 +69,20 @@ This tool can be used as base for creating code generators for specific framewor
 
     *  [How to create templates](docs/createTemplates.md)
 
+## Prerequisites
+
+- PHP >= 5.6.*
+
+## Developers
+
+* [Juan Alonso](https://github.com/jalogut)
+
+Licence
+-------
+[GNU General Public License, version 3 (GPLv3)](http://opensource.org/licenses/gpl-3.0)
+
+Copyright
+---------
+(c) 2016 Staempfli AG
+
 
