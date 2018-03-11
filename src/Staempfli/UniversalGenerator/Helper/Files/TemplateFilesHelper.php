@@ -36,7 +36,11 @@ class TemplateFilesHelper extends AbstractFilesHelper
     /**
      * @var string
      */
-    protected $afterGenerateFilename = self::TEMPLATE_CONFIG_FOLDER . '/after-generate-info.txt';
+    protected $afterGenerateFilename = self::TEMPLATE_CONFIG_FOLDER . '/after-generate-info.txt'; /**
+    /**
+     * @var string
+     */
+    protected $featuredFilename = self::TEMPLATE_CONFIG_FOLDER . '/.featured';
 
     /**
      * @param string $templateName
@@ -56,25 +60,48 @@ class TemplateFilesHelper extends AbstractFilesHelper
     /**
      * @return array
      */
-    public function getTemplatesList()
+    public function getAllTemplates()
     {
         $templates = [];
-
         $directoryIterator = $this->getDirectoriesIterator($this->sharedTemplatesDir);
         foreach ($directoryIterator as $dir) {
             if ($dir->isDir()) {
-                $templates[$dir->getFilename()] = 'shared';
+                $templates[] = $dir->getFilename();
             }
         }
-        if (is_dir($this->privateTemplatesDir)) {
-            $directoryIterator = $this->getDirectoriesIterator($this->privateTemplatesDir);
-            foreach ($directoryIterator as $dir) {
-                if ($dir->isDir()) {
-                    $templates[$dir->getFilename()] = 'private';
-                }
-            }
-        }
+        return $templates;
+    }
 
+    /**
+     * @return array
+     */
+    public function getFeaturedTemplates()
+    {
+        $featuredTemplates = [];
+        $allTemplates = $this->getAllTemplates();
+        foreach ($allTemplates as $template) {
+            if ($this->isFeaturedTemplate($template)) {
+                $featuredTemplates[] = $template;
+            }
+        }
+        return $featuredTemplates;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrivateTemplates()
+    {
+        if (!is_dir($this->privateTemplatesDir)) {
+            return [];
+        }
+        $templates = [];
+        $directoryIterator = $this->getDirectoriesIterator($this->privateTemplatesDir);
+        foreach ($directoryIterator as $dir) {
+            if ($dir->isDir()) {
+                $templates[] = $dir->getFilename();
+            }
+        }
         return $templates;
     }
 
@@ -153,6 +180,19 @@ class TemplateFilesHelper extends AbstractFilesHelper
     public function isConfigurationFile(\SplFileInfo $file)
     {
         if (strpos($file->getPathname(), self::TEMPLATE_CONFIG_FOLDER) !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $templateName
+     * @return bool
+     */
+    public function isFeaturedTemplate($templateName)
+    {
+        $templateDir = $this->getTemplateDir($templateName);
+        if (file_exists($templateDir . '/' . $this->featuredFilename)) {
             return true;
         }
         return false;

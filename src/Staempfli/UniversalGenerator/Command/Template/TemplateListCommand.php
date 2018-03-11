@@ -27,20 +27,35 @@ class TemplateListCommand extends AbstractTemplateCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output) //@codingStandardsIgnoreLine
     {
-        $this->io->writeln('<comment>Templates List</comment>');
+        $this->io->writeln('Templates List');
 
-        foreach ($this->templateFilesHelper->getTemplatesList() as $templateName => $type)
-        {
-            if ($type == 'private') {
-                $templateName = $templateName . ' (Private)';
-            }
-            $this->io->writeln('<info>  ' . $templateName . '</info>');
-        }
+        $featuredTemplates = $this->templateFilesHelper->getFeaturedTemplates();
+        $allTemplates = $this->templateFilesHelper->getAllTemplates();
+        $privateTemplates = $this->templateFilesHelper->getPrivateTemplates();
+
+        $this->displayTemplateList('Featured', $featuredTemplates);
+        $this->displayTemplateList('More Templates', array_diff($allTemplates, $featuredTemplates));
+        $this->displayTemplateList('Private', $privateTemplates);
 
         $this->io->newLine();
         $this->io->writeln([
             '<comment>Generate one of these templates using:</comment>',
             sprintf('<info>  %s template:generate <template></info>', $this->getApplication()->getName())
         ]);
+    }
+
+    /**
+     * @param string $listTitle
+     * @param array $templates
+     */
+    private function displayTemplateList($listTitle, $templates)
+    {
+        if ($templates) {
+            $this->io->newLine();
+            $this->io->writeln('<comment>' . $listTitle . '</comment>');
+            foreach ($templates as $templateName) {
+                $this->io->writeln('<info>  ' . $templateName . '</info>');
+            }
+        }
     }
 }
