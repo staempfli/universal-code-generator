@@ -27,8 +27,15 @@ class ConfigDisplayCommand extends AbstractCommand
     {
         $this->io->writeln('<comment>Display Configuration</comment>');
 
-        $this->propertiesTask->loadDefaultProperties();
-        $this->propertiesTask->displayLoadedProperties();
+        if ($this->propertiesTask->defaultPropertiesExist()) {
+            $this->propertiesTask->loadDefaultProperties();
+            $this->propertiesTask->displayLoadedProperties();
+        } else {
+            $this->io->writeln([
+               "<info>  Global Configuration doesn't exist.</info>",
+            ]);
+        }
+
         $this->io->writeln([
             '<comment>You can change this properties with:</comment>',
             sprintf('<info>  %s config:set</info>', $this->getApplication()->getName())
