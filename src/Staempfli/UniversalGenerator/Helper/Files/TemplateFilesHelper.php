@@ -40,7 +40,7 @@ class TemplateFilesHelper extends AbstractFilesHelper
     /**
      * @var string
      */
-    protected $featuredFilename = self::TEMPLATE_CONFIG_FOLDER . '/.featured';
+    protected $featuredFilename = self::TEMPLATE_CONFIG_FOLDER . '/featured';
 
     /**
      * @param string $templateName
