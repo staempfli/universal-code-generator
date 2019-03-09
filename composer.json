@@ -12,8 +12,8 @@
     }
   ],
   "require": {
-    "symfony/console": "~3.0|~2.7",
-    "symfony/yaml": "~3.0|~2.1"
+    "symfony/console": "~4.0|~3.0|~2.7",
+    "symfony/yaml": "~4.0|~3.0|~2.1"
   },
   "autoload": {
     "psr-4": { "Staempfli\\UniversalGenerator\\": "src/Staempfli/UniversalGenerator/" }
