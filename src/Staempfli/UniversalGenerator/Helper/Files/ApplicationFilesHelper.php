@@ -8,6 +8,8 @@
 
 namespace Staempfli\UniversalGenerator\Helper\Files;
 
+use RuntimeException;
+
 class ApplicationFilesHelper extends AbstractFilesHelper
 {
     const DEFAULT_APPLICATION_NAME = "codegen-universal";
@@ -52,10 +54,21 @@ class ApplicationFilesHelper extends AbstractFilesHelper
 
     /**
      * @return mixed
+     * @throws RuntimeException
      */
     public function getUsersHome()
     {
-        return $_SERVER['HOME'];
+        if (false !== ($home = getenv('HOME'))) {
+            return $home;
+        }
+        if (defined('PHP_WINDOWS_VERSION_BUILD') && false !== ($home = getenv('USERPROFILE'))) {
+            return $home;
+        }
+        if (function_exists('posix_getuid') && function_exists('posix_getpwuid')) {
+            $info = posix_getpwuid(posix_getuid());
+            return $info['dir'];
+        }
+        throw new RuntimeException('Could not determine user directory');
     }
 
 }
